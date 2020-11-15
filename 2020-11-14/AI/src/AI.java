@@ -20,9 +20,9 @@ public class AI extends MIDlet
 }
 class MainCanvas extends Canvas
 {
-	Image img,img1,img2,img3,currentImg;
+	Image img,img1,img2,img3,currentImg;	//瀹氫箟鍙橀噺
 	public MainCanvas(){
-		try
+		try	
 		{
 			img=Image.createImage("/sayo10.png");/*xia*/
 			img1=Image.createImage("/sayo12.png");/*zuo*/
@@ -40,22 +40,22 @@ class MainCanvas extends Canvas
 		g.fillRect(0,0,getWidth(),getHeight());
 		g.drawImage(currentImg,120,100,0);
 	}
-	public void keyPressed(int keyCode){	/*转向判断*/
+	public void keyPressed(int keyCode){	/*杞悜鍒ゆ柇*/
 		int action=getGameAction(keyCode);
-		if(action==LEFT){					/*向左*/
+		if(action==LEFT){					/*鍚戝乏*/
 			currentImg=img1;
 			System.out.println("xzz");
 			repaint();
 		}
-		if(action==RIGHT){			/*向右*/
+		if(action==RIGHT){			/*鍚戝彸*/
 			currentImg=img2;
 			repaint();
 		}
-		if(action==UP){				/*向上*/
+		if(action==UP){				/*鍚戜笂*/
 			currentImg=img3;
 			repaint();
 		}
-		if(action==DOWN){				/*向下*/
+		if(action==DOWN){				/*鍚戜笅*/
 			currentImg=img;
 			repaint();
 		}
