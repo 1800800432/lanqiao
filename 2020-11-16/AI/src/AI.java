@@ -20,15 +20,20 @@ public class AI extends MIDlet
 }
 class MainCanvas extends Canvas
 {
-	Image downImg,leftImg,rightImg,upImg,currentImg;	//定义变量
+	int x,y;
+	Image downImg,leftImg,leftImg1,leftImg2,rightImg,upImg,currentImg;	//瀹氫箟鍙橀噺
 	public MainCanvas(){
 		try	
 		{
 			downImg=Image.createImage("/sayo10.png");/*xia*/
 			leftImg=Image.createImage("/sayo12.png");/*zuo*/
+			leftImg1=Image.createImage("/sayo02.png");/*zuo*/
+			leftImg2=Image.createImage("/sayo22.png");/*zuo*/
 			rightImg=Image.createImage("/sayo16.png");/*you*/
 			upImg=Image.createImage("/sayo14.png");/*shang*/
 			currentImg=downImg;
+			x=120;
+			y=100;
 		}
 		catch (IOException e)
 		{
@@ -38,26 +43,32 @@ class MainCanvas extends Canvas
 	public void paint(Graphics g){
 		g.setColor(0,0,0);
 		g.fillRect(0,0,getWidth(),getHeight());
-		g.drawImage(currentImg,120,100,0);
+		g.drawImage(currentImg,x,y,0);
 	}
-	public void keyPressed(int keyCode){	/*转向判断*/
+	public void keyPressed(int keyCode){	/*杞悜鍒ゆ柇*/
 		int action=getGameAction(keyCode);
-		if(action==LEFT){					/*向左*/
+		if(action==LEFT){					/*鍚戝乏*/
 			currentImg=leftImg;
-			System.out.println("左转");
+			x=x-5;
+			
 		}
-		if(action==RIGHT){			/*向右*/
+		if(action==RIGHT){			/*鍚戝彸*/
 			currentImg=rightImg;
-			System.out.println("右转");
+			x=x+5;
 		}
-		if(action==UP){				/*向上*/
+		if(action==UP){				/*鍚戜笂*/
 			currentImg=upImg;
-			System.out.println("向上");
+			y=y-5;
 		}
-		if(action==DOWN){				/*向下*/
+		if(action==DOWN){				/*鍚戜笅*/
 			currentImg=downImg;
-			System.out.println("向下")	
+			y=y+5;
 		}
-		repaint();
 	}
+
+		if (x%2!=0)
+			{
+			}
+		repaint();
+
 }
