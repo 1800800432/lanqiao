@@ -18,11 +18,13 @@ public class AI extends MIDlet
 	public void pauseApp(){
 	}
 }
-class MainCanvas extends Canvas
+class MainCanvas extends Canvas implements Runnable
 {
-	int i,x,y,LeftFlag,RightFlag,UpFlag,DownFlag;
-	
+	Thread thread;
+	int i,LeftFlag,RightFlag,UpFlag,DownFlag;
+	int bossX,bossY,heroX,heroY;
 	Image heroImg[][]=new Image[4][3];
+	Image bossImg;
 	Image currentImg;	//定义变量
 	public MainCanvas(){
 		try	
@@ -38,28 +40,60 @@ class MainCanvas extends Canvas
 				for(int j=0;j<heroImg[i].length;j++)
 					heroImg[i][j]=Image.createImage("/sayo"+i+j+".png");
 				}
+			bossImg=Image.createImage("/zuzu000.png");
 			currentImg=heroImg[3][1];
-			x=120;
-			y=100;
+			heroX=120;
+			heroY=100;
+			bossX=0;
+			bossY=0;
 			LeftFlag=1;
 			RightFlag=1;
 			UpFlag=1;
 			DownFlag=1;
+
+			thread=new Thread(this);
+			thread.start();
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
+	public void run(){
+		while(true){
+			try
+			{
+				Thread.sleep(200);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			if(bossX<heroX){
+				bossX++;
+			}
+			else{
+				bossX--;
+			}
+			if(bossY<heroY){
+				bossY++;
+			}
+			else{
+				bossY--;
+			}
+
+			repaint();
+		}
+	}
+
 	public void paint(Graphics g){
 		g.setColor(250,200,180);
 		g.fillRect(0,0,getWidth(),getHeight());
-		g.drawImage(currentImg,x,y,0);	
+		g.drawImage(currentImg,heroX,heroY,0);	
+		g.drawImage(bossImg,bossX,bossY,0);	
 	}
 	public void keyPressed(int keyCode){	/*转向判断*/
 		int action=getGameAction(keyCode);
-
-
 		/*向左移动*/
 		if(action==LEFT){	
 			if(currentImg!=heroImg[0][1]&&currentImg!=heroImg[0][0]&&currentImg!=heroImg[0][2])					
@@ -74,7 +108,7 @@ class MainCanvas extends Canvas
 						currentImg=heroImg[0][2];
 						LeftFlag=1;
 					}
-			x=x-2;
+			heroX=heroX-2;
 		}
 
 
@@ -90,7 +124,7 @@ class MainCanvas extends Canvas
 			currentImg=heroImg[1][2];
 			RightFlag=1;
 		}
-			x=x+2;
+			heroX=heroX+2;
 		}
 
 
@@ -106,7 +140,7 @@ class MainCanvas extends Canvas
 			currentImg=heroImg[2][2];
 			UpFlag=1;
 		}
-			y=y-2;
+			heroY=heroY-2;
 		}
 
 
@@ -122,10 +156,10 @@ class MainCanvas extends Canvas
 			currentImg=heroImg[3][2];
 			DownFlag=1;
 		}
-			y=y+2;
+			heroY=heroY+2;
 		}
 		
-		repaint();
+		
 	}
 }
 

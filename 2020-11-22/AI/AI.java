@@ -18,97 +18,148 @@ public class AI extends MIDlet
 	public void pauseApp(){
 	}
 }
-class MainCanvas extends Canvas
+class MainCanvas extends Canvas implements Runnable
 {
-	int x,y;
-	Image downImg,downImg1,downImg2,leftImg,leftImg1,leftImg2,rightImg,rightImg1,rightImg2,upImg,upImg1,upImg2,currentImg;	//定义变量
+	Thread thread;
+	int i,heroX,heroY,LeftFlag,RightFlag,UpFlag,DownFlag;
+	int bossX,bossY;
+	Image heroImg[][]=new Image[4][3];
+	Image bossImg;
+	Image currentImg;	//定义变量
 	public MainCanvas(){
 		try	
 		{
-			downImg=Image.createImage("/sayo10.png");/*xia*/
-			downImg1=Image.createImage("/sayo00.png");
-			downImg2=Image.createImage("/sayo20.png");
-			leftImg=Image.createImage("/sayo12.png");/*zuo*/
-			leftImg1=Image.createImage("/sayo02.png");
-			leftImg2=Image.createImage("/sayo22.png");
-			rightImg=Image.createImage("/sayo16.png");/*you*/
-			rightImg1=Image.createImage("/sayo06.png");
-			rightImg2=Image.createImage("/sayo26.png");
-			upImg=Image.createImage("/sayo14.png");/*shang*/
-			upImg1=Image.createImage("/sayo04.png");
-			upImg2=Image.createImage("/sayo24.png");
-			currentImg=downImg;
-			x=120;
-			y=100;
+			/*
+			i:
+			0:left
+			1:right
+			2:up
+			3:dowm
+			*/
+			for(int i=0;i<heroImg.length;i++){
+				for(int j=0;j<heroImg[i].length;j++)
+					heroImg[i][j]=Image.createImage("/sayo"+i+j+".png");
+				}
+			bossImg=Image.createImage("zuzu000.png");
+			currentImg=heroImg[3][1];
+			heroX=120;
+			heroY=100;
+			bossX=0;
+			bossY=0;
+			LeftFlag=1;
+			RightFlag=1;
+			UpFlag=1;
+			DownFlag=1;
+
+			thread=new Thread(this);
+			thread.start();
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
+	public void run(){
+		while(true){
+			try
+			{
+				Thread.sleep(200);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			if(bossX<heroX){
+				bossX++;
+			}
+			else{
+				bossX--;
+			}
+			if(bossY<heroY){
+				bossY++;
+			}
+			else{
+				bossY--;
+			}
+
+			repaint();
+		}
+	}
+
 	public void paint(Graphics g){
-		g.setColor(0,0,0);
+		g.setColor(250,200,180);
 		g.fillRect(0,0,getWidth(),getHeight());
-		g.drawImage(currentImg,x,y,0);	
+		g.drawImage(currentImg,heroX,heroY,0);	
+		g.drawImage(bossImg,bossX,bossY,0);	
 	}
 	public void keyPressed(int keyCode){	/*转向判断*/
 		int action=getGameAction(keyCode);
-		if(action==LEFT){					/*向左移动*/
-		if(currentImg==leftImg||currentImg==leftImg1||currentImg==leftImg2)
-		{
-			if(currentImg==leftImg1)
-				currentImg=leftImg2;
-			else
-				currentImg=leftImg1;
+		/*向左移动*/
+		if(action==LEFT){	
+			if(currentImg!=heroImg[0][1]&&currentImg!=heroImg[0][0]&&currentImg!=heroImg[0][2])					
+			currentImg=heroImg[0][1];
+				else if(LeftFlag==1)
+					{
+						currentImg=heroImg[0][0];
+						LeftFlag++;
+					}
+				else if(LeftFlag==2)
+					{
+						currentImg=heroImg[0][2];
+						LeftFlag=1;
+					}
+			heroX=heroX-2;
 		}
-		else
-			currentImg=leftImg;
-			x=x-2;
-			
+
+
+		/*向右移动*/
+		else if(action==RIGHT){			
+		if(currentImg!=heroImg[1][1]&&currentImg!=heroImg[1][0]&&currentImg!=heroImg[1][2])					
+			currentImg=heroImg[1][1];
+		else if(RightFlag==1){
+			currentImg=heroImg[1][0];
+			RightFlag++;
 		}
-		else if(action==RIGHT){			/*向右移动*/
-			if(currentImg==rightImg||currentImg==rightImg1||currentImg==rightImg2)
-		{
-			if(currentImg==rightImg1)
-				currentImg=rightImg2;
-			else
-				currentImg=rightImg1;
+		else if(RightFlag==2){
+			currentImg=heroImg[1][2];
+			RightFlag=1;
 		}
-		else
-			currentImg=rightImg;
-			x=x+2;
+			heroX=heroX+2;
 		}
-		else if(action==UP){				/*向上移动*/
-			if(currentImg==upImg||currentImg==upImg1||currentImg==upImg2)
-		{
-			if(currentImg==upImg1)
-				currentImg=upImg2;
-			else
-				currentImg=upImg1;
+
+
+		/*向上移动*/
+		else if(action==UP){				
+			if(currentImg!=heroImg[2][1]&&currentImg!=heroImg[2][0]&&currentImg!=heroImg[2][2])					
+			currentImg=heroImg[2][1];
+		else if(UpFlag==1){
+			currentImg=heroImg[2][0];
+			UpFlag++;
 		}
-		else
-			currentImg=upImg;
-			y=y-2;
+		else if(UpFlag==2){
+			currentImg=heroImg[2][2];
+			UpFlag=1;
 		}
-		else if(action==DOWN){				/*向下移动*/
-			if(currentImg==downImg||currentImg==downImg1||currentImg==downImg2)
-		{
-			if(currentImg==downImg1)
-				currentImg=downImg2;
-			else
-				currentImg=downImg1;
+			heroY=heroY-2;
 		}
-		else
-			currentImg=downImg;
-			y=y+2;
+
+
+		/*向下移动*/
+		else if(action==DOWN){				
+			if(currentImg!=heroImg[3][1]&&currentImg!=heroImg[3][0]&&currentImg!=heroImg[3][2])					
+			currentImg=heroImg[3][1];
+		else if(DownFlag==1){
+			currentImg=heroImg[3][0];
+			DownFlag++;
 		}
-		
+		else if(DownFlag==2){
+			currentImg=heroImg[3][2];
+			DownFlag=1;
+		}
+			heroY=heroY+2;
+		}
 		repaint();
-		/*判断hero的朝向，在hreo不动时输出停止图片*/			
-	}
-
 		
-
-
+	}
 }
 
